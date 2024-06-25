@@ -5,22 +5,37 @@
 // element in the result array should be the result of the first function frm the functions array.
 // the second element in result array should be the result of the second function from the functions array, and so on.
 
-// For exmaple, the following code should print '[2,3]'
+// For example, the following code should print '[2,3]'
 
+// let counter = 1;
+// function incrementCounterAsync() {
+//   return new Promise((resolve, reject) => {
+//       counter += 1;
+//       resolve(counter);
+//   });
+// }
+
+// let promise = runSequentially([incrementCounterAsync, incrementCounterAsync]);
+// if(promise) {
+//   promise.then(result => console.log(result))
+//   .catch(error => console.log("Error: " + error));
+// }
+
+
+// Solution
 async function runSequentially(functions) {
-  // Write your code here
+  let results = []
+
+  for (const func of functions) {
+    try {
+      const result = await func()
+      console.log(result)
+      results.push(result)
+    } catch (error) {
+      return Promise.reject(error)
+    }
+  }
+  return results
 }
 
-let counter = 1;
-function incrementCounterAsync() {
-  return new Promise((resolve, reject) => {
-      counter += 1;
-      resolve(counter);
-  });
-}
-let promise = runSequentially([incrementCounterAsync, incrementCounterAsync]);
-if(promise) {
-  promise.then(result => console.log(result))
-  .catch(error => console.log("Error: " + error));
-}
-module.export = runSequentially;
+module.exports = runSequentially;

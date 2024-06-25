@@ -1,27 +1,28 @@
-<!-- In the game Pixelville, a player has a set of digital flasks of different sizes. 
- The objective is to fill these flasks from magical well and pour water into an overhead tank.
- Water can only be drawn one flask at a time, and each flask can be either partially or fully filled.
- A flask can be used any number of times. 
- 
- Implement the getCount function which should take a list of flask capacities, the total water available 
- in the well, and the volume of the tank. It should return the minimal number of draws required to completely
- fill the overhead tank, or -1 if its not possible to completely fill the tank. -->
 
- <!-- For example, the following code should print 5: -->
  <?php
-$input = [2,3,7,1,5,4]
-echo getCount($input, 100, 34)
-?> 
-
-<?php
 /**
  * @return integer The minimum number of draws required to fill the tank
  */
 function getCount(array $flaskSizes, int $waterAvailable, int $tankVolume) : int
 {
-    return 0;
+    // Initialize a DP array with large numbers (infinity)
+    $INF = PHP_INT_MAX;
+    $dp = array_fill(0, $tankVolume + 1, $INF);
+    $dp[0] = 0; // 0 draws needed to have 0 volume in the tank
+
+    foreach ($flaskSizes as $flask) {
+        for ($v = $flask; $v <= $tankVolume; $v++) {
+            // Update dp[v] only if we can reach dp[v - flask] and then use one more flask of size flask
+            if ($dp[$v - $flask] != $INF) {
+                $dp[$v] = min($dp[$v], $dp[$v - $flask] + 1);
+            }
+        }
+    }
+
+    // If dp[tankVolume] is still INF, it means it's not possible to achieve tankVolume exactly
+    return $dp[$tankVolume] == $INF ? -1 : $dp[$tankVolume];
 }
 
 $input = [2, 3, 7, 1, 5, 4];
-echo getCount($input, 100, 34);
+echo getCount($input, 100, 34); // Output: 5
 ?>
